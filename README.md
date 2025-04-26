@@ -58,6 +58,7 @@
 #### Statistical models
   - Arima
   - Prophet
+  - Neural Prophet
   - Vector Auto Regressors
 
 #### ML models
