@@ -1,3 +1,9 @@
+numpy
 pandas
 fastparquet
 pyarrow
+scikit-learn
+
+jupyter
+ipykernel
+jupyterlab
