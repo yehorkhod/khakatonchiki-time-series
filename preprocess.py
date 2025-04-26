@@ -67,12 +67,10 @@ class Preprocess:
         pca = PCA(n_components=1)
         pca_result = pca.fit_transform(self.data[pca_cols])
         
-        # Replace the original columns with the PCA component
-        for col in pca_cols:
-            self.data = self.data.drop(columns=[col])
+        self.data = self.data.drop(columns=pca_cols)
         
         # Add PCA component as a new column
-        self.data['PCA_Component'] = pca_result
+        self.data['Series_PCA'] = pca_result
         
         # Update columns list
         self.columns = self.data.columns.tolist()
@@ -114,7 +112,7 @@ class Preprocess:
         """
         # Identify the date column and numeric columns
         date_col = self.columns[0]
-        numeric_cols = self.data.select_dtypes(include=np.number).columns.tolist()
+        columns = self.data.columns[self.data.columns.str.startswith("Series")].tolist()
         
         # Ensure date column is in datetime format
         if not pd.api.types.is_datetime64_any_dtype(self.data[date_col]):
@@ -124,7 +122,7 @@ class Preprocess:
         self.data = self.data.sort_values(by=date_col)
         
         # Create lag features for each numeric column
-        for col in numeric_cols:
+        for col in columns:
             for lag in self.lags_list:
                 # Create a new column with the lagged values
                 lag_col_name = f"{col}_lag_{lag}"
@@ -144,10 +142,10 @@ class Preprocess:
         using the specified decay periods.
         """
         # Identify numeric columns
-        numeric_cols = self.data.select_dtypes(include=np.number).columns.tolist()
+        columns = self.data.columns[self.data.columns.str.startswith("Series")].tolist()
         
         # Calculate EMA for each span (decay period)
-        for col in numeric_cols:
+        for col in columns:
             for span in self.decays_list:
                 # Create EMA column
                 ema_col_name = f"{col}_ema_{span}"
