@@ -3,6 +3,9 @@ pandas
 fastparquet
 pyarrow
 scikit-learn
+matplotlib
+seaborn
+plotly
 
 jupyter
 ipykernel
