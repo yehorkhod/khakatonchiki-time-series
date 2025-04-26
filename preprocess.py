@@ -43,6 +43,11 @@ class Preprocess:
         return self.split()
 
     def nans(self) -> None:
+        date_col = self.columns[0]
+
+        # Проверяем, является ли колонка датой/временем
+        is_datetime = pd.api.types.is_datetime64_any_dtype(self.data[date_col])
+
         match self.config["NaNs"]:
             case "Linear interpolation":
                 self.data.interpolate(method='linear', inplace=True)
@@ -51,15 +56,24 @@ class Preprocess:
                 self.data.fillna(method='ffill', inplace=True)
 
             case "Time-aware interpolation":
-                date_col = self.columns[0]
+                if not is_datetime:
+                    # Если колонка не datetime, преобразуем её
+                    try:
+                        self.data[date_col] = pd.to_datetime(self.data[date_col])
+                    except:
+                        # Если не получается преобразовать, используем линейную интерполяцию
+                        self.data.interpolate(method='linear', inplace=True)
+                        return
 
-                if not pd.api.types.is_datetime64_any_dtype(self.data[date_col]):
-                    self.data[date_col] = pd.to_datetime(self.data[date_col])
-
+                # Теперь безопасно использовать time-based интерполяцию
                 self.data = self.data.set_index(date_col).interpolate(method='time').reset_index()
 
             case "Drop":
                 self.data.dropna(inplace=True)
+
+            case _:
+                # По умолчанию используем линейную интерполяцию
+                self.data.interpolate(method='linear', inplace=True)
 
     def pca(self) -> None:
         pca_cols = ['Series2', 'Series3', 'Series4']
