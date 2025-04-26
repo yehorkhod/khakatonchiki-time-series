@@ -1,4 +1,7 @@
 .venv/
 venv/
+
 start.sh
+
 .ipynb_checkpoints/
+__pycache__/

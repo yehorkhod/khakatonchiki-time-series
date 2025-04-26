@@ -3,6 +3,7 @@ pandas
 fastparquet
 pyarrow
 scikit-learn
+statsmodels
 matplotlib
 seaborn
 plotly
