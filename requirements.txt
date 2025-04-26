@@ -2,8 +2,13 @@ numpy
 pandas
 fastparquet
 pyarrow
+
 scikit-learn
 statsmodels
+xgboost
+prophet
+neuralprophet
+
 matplotlib
 seaborn
 plotly
